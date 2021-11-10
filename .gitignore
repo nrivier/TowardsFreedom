@@ -1,0 +1,34 @@
+##############################
+# Files/File-pattern to ignore
+##############################
+
+# Emacs, Vi and other editor temp files
+*~
+.#*
+
+# Files generated via swagger tools
+spec-validation-output-release.txt
+spec-validation-output.txt
+
+########################################
+# Directory/Directory pattern to ignore
+########################################
+
+# Intellij project settings folder
+.idea/
+
+# Build destination for Intellij and other IDEs
+bin/
+out/
+*.iml
+.classpath
+.project
+.settings
+*.ipr
+*.iws
+
+# Build destination for Maven
+target/
+
+# Created by build
+abandoned/

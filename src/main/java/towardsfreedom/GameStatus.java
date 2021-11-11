@@ -33,6 +33,23 @@ public class GameStatus {
         return gameStatus;
     }
 
+    public boolean hasLoop() {
+        boolean foundIdentical = false;
+        if (moves.size() == 0) {
+            return false;
+        }
+        BoardState checkedBoardState = TowardsFreedom.getInitialState();
+
+        for (int i = 0 ; i < moves.size() - 1; i++) {
+           if (checkedBoardState.equals(boardState)) {
+                foundIdentical = true;
+                break;
+           }
+           checkedBoardState.moveShape(moves.get(i).getBoardShape(), moves.get(i).getMoveDirection());
+        }
+        return foundIdentical;
+    }
+
     public boolean isFinal() {
         return  boardState.isFinal();
     }

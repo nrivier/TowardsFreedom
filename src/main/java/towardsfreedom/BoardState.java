@@ -1,5 +1,6 @@
 package towardsfreedom;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 public class BoardState {
 
     private int height;
@@ -68,7 +70,7 @@ public class BoardState {
         boolean answer = true;
         for (int i = 0; i < boardShape.getHeight() && answer; i++) {
             for ( int j=0 ; j < boardShape.getWidth() && answer; j++) {
-                answer &= ! boardMap[i + boardShape.getBoardLocationX()][j + boardShape.getBoardLocationY()] ;
+                answer = answer && !boardMap[i + boardShape.getBoardLocationX()][j + boardShape.getBoardLocationY()] ;
             }
         }
 
@@ -89,25 +91,25 @@ public class BoardState {
         switch (moveDirection) {
             case UP:
                 for (int j = 0; j < boardShape.getWidth() && answer; j++) {
-                    answer &= isLocationInsideBoard(boardShape.getBoardLocationX() - 1, boardShape.getBoardLocationY() + j) &&
+                    answer = answer && isLocationInsideBoard(boardShape.getBoardLocationX() - 1, boardShape.getBoardLocationY() + j) &&
                               !boardMap[boardShape.getBoardLocationX() - 1 ][boardShape.getBoardLocationY() + j];
                 }
                 break;
             case DOWN:
                 for (int j = 0; j < boardShape.getWidth() && answer; j++) {
-                    answer &= isLocationInsideBoard(boardShape.getBoardLocationX() + boardShape.getHeight(), boardShape.getBoardLocationY() + j) &&
+                    answer = answer && isLocationInsideBoard(boardShape.getBoardLocationX() + boardShape.getHeight(), boardShape.getBoardLocationY() + j) &&
                               !boardMap[boardShape.getBoardLocationX() + boardShape.getHeight()][boardShape.getBoardLocationY() + j];
                 }
                 break;
             case LEFT:
                 for (int i = 0; i < boardShape.getHeight() && answer; i++) {
-                    answer &= isLocationInsideBoard(boardShape.getBoardLocationX() + i, boardShape.getBoardLocationY() - 1) &&
+                    answer = answer && isLocationInsideBoard(boardShape.getBoardLocationX() + i, boardShape.getBoardLocationY() - 1) &&
                             !boardMap[boardShape.getBoardLocationX() + i][boardShape.getBoardLocationY() - 1];
                 }
                 break;
             case RIGHT:
                 for (int i = 0; i < boardShape.getHeight() && answer; i++) {
-                    answer &= isLocationInsideBoard(boardShape.getBoardLocationX() + i, boardShape.getBoardLocationY() + boardShape.getWidth()) &&
+                    answer = answer && isLocationInsideBoard(boardShape.getBoardLocationX() + i, boardShape.getBoardLocationY() + boardShape.getWidth()) &&
                             !boardMap[boardShape.getBoardLocationX() + i][boardShape.getBoardLocationY() + boardShape.getWidth()];
                 }
                 break;

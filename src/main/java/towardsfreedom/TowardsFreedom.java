@@ -2,13 +2,16 @@ package towardsfreedom;
 
 import towardsfreedom.layouts.InitialLayout_0;
 
+import java.text.SimpleDateFormat;
 import java.util.Collections;
-import java.util.Stack;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class TowardsFreedom {
-    private Stack<GameStatus> gameStatusStack = new Stack<>();
+    private final Queue<GameStatus> gameStatusQueue = new LinkedList<>();
     private GameStatus  finalGameStatus = null;
-
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
     public static void main(String[] args) {
 
@@ -17,29 +20,41 @@ public class TowardsFreedom {
 
     }
 
+    public static BoardState getInitialState() {
+        return new InitialLayout_0().setup();
+    }
+
     public void run() {
-        BoardState boardState = new InitialLayout_0().setup();
+        BoardState boardState = getInitialState();
         GameStatus initialGameStatus = new GameStatus(boardState, Collections.emptyList());
-        gameStatusStack.push(initialGameStatus);
+        gameStatusQueue.add(initialGameStatus);
 
         boolean foundSolution = false;
 
+        long lastTime = System.currentTimeMillis();
 
-        while (!foundSolution && gameStatusStack.size() > 0) {
+        while (!foundSolution && gameStatusQueue.size() > 0) {
 
-            GameStatus gameStatus = gameStatusStack.pop();
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastTime >= 5*60*1000) {
+                System.out.println("At "+ dateFormat.format(new Date(currentTime)) + " queue size is " + gameStatusQueue.size());
+                lastTime = currentTime;
+            }
+            GameStatus gameStatus = gameStatusQueue.remove();
 
             for (BoardShape shape: gameStatus.getBoardState().getShapes()) {
                 for (MoveDirection moveDirection: MoveDirection.values()) {
                     BoardMove boardMove = new BoardMove(shape, moveDirection);
                     if (gameStatus.canDoMove(boardMove)) {
                         GameStatus newGameStatus = gameStatus.moveShape(boardMove);
-                        foundSolution = newGameStatus.isFinal();
-                        if (foundSolution) {
-                            finalGameStatus = newGameStatus;
-                            break;
-                        } else {
-                            gameStatusStack.push(newGameStatus);
+                        if (!newGameStatus.hasLoop()) {
+                            foundSolution = newGameStatus.isFinal();
+                            if (foundSolution) {
+                                finalGameStatus = newGameStatus;
+                                break;
+                            } else {
+                                gameStatusQueue.add(newGameStatus);
+                            }
                         }
                     }
                 }
@@ -52,6 +67,9 @@ public class TowardsFreedom {
             }
 
         }
-        System.out.println("Did not find a solution! :-(");
+        if (!foundSolution) {
+            System.out.println("Did not find a solution! :-(");
+        }
+
     }
 }
